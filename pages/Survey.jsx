@@ -29,19 +29,10 @@ function Survey() {
           : e.target.value,
     }));
   };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    setLoading(true);
-    setError("");
-
-    try {
-      const response = await api.post(
-        "/survey",
         formData
       );
 
+console.log("Survey Response:", response.data);
       // Save latest prediction
       localStorage.setItem(
         "latestResult",
@@ -319,5 +310,14 @@ function Survey() {
 
   );
 }
+const response = await api.post("/survey", formData);
 
+console.log("Survey Response:", response.data);
+
+localStorage.setItem(
+  "latestResult",
+  JSON.stringify(response.data)
+);
+
+navigate("/result");
 export default Survey;
