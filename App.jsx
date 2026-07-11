@@ -47,15 +47,9 @@ function App() {
             />
 
             <Route
-                path="/result"
-                element={
-                    <ProtectedRoute>
-
-                        <Result />
-
-                    </ProtectedRoute>
-                }
-            />
+    path="/result"
+    element={<Result />}
+/>
 
         </Routes>
 

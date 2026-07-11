@@ -29,39 +29,42 @@ function Survey() {
           : e.target.value,
     }));
   };
-        formData
-      );
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-console.log("Survey Response:", response.data);
-      // Save latest prediction
-      localStorage.setItem(
-        "latestResult",
-        JSON.stringify(response.data)
-      );
+    setLoading(true);
+    setError("");
 
-      navigate("/result");
+    try {
+      const response = await api.post("/survey", formData);
 
+      console.log("Survey Response:", response.data);
+
+try {
+  localStorage.setItem(
+    "latestResult",
+    JSON.stringify(response.data)
+  );
+  console.log("✅ Saved to localStorage");
+} catch (e) {
+  console.error("localStorage Error:", e);
+}
+
+console.log("About to navigate...");
+
+navigate("/result");
+
+console.log("Navigation called");
     } catch (err) {
-
       if (err.response?.status === 207) {
-
         alert(
           "Survey saved successfully.\nPrediction service is temporarily unavailable."
         );
-
       } else {
-
-        setError(
-          err.response?.data?.message ||
-          "Unable to submit survey."
-        );
-
+        setError(err.response?.data?.message || "Unable to submit survey.");
       }
-
     } finally {
-
       setLoading(false);
-
     }
   };
 
@@ -310,14 +313,4 @@ console.log("Survey Response:", response.data);
 
   );
 }
-const response = await api.post("/survey", formData);
-
-console.log("Survey Response:", response.data);
-
-localStorage.setItem(
-  "latestResult",
-  JSON.stringify(response.data)
-);
-
-navigate("/result");
 export default Survey;

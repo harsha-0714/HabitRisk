@@ -1,34 +1,27 @@
-import { useEffect, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 
 function Result() {
-  const [result, setResult] = useState(null);
+  const storedResult = localStorage.getItem("latestResult");
 
-  useEffect(() => {
-    const storedResult = localStorage.getItem("latestResult");
-
-    if (storedResult) {
-      setResult(JSON.parse(storedResult));
-    }
-  }, []);
-
-  if (!result) {
+  if (!storedResult) {
     return <Navigate to="/survey" replace />;
   }
 
+  const result = JSON.parse(storedResult);
   const risk = result.riskResult;
 
   if (!risk) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-100">
+      <div className="min-h-screen bg-slate-100 flex justify-center items-center">
         <div className="bg-white shadow-lg rounded-xl p-8 w-full max-w-lg text-center">
-          <h1 className="text-2xl font-bold text-red-600 mb-4">
+
+          <h1 className="text-3xl font-bold text-red-600 mb-4">
             Prediction Unavailable
           </h1>
 
           <p className="text-gray-600 mb-6">
-            Your survey was saved successfully, but the prediction service is
-            temporarily unavailable.
+            Your survey has been saved successfully, but the ML prediction
+            service is currently unavailable.
           </p>
 
           <Link
@@ -37,6 +30,7 @@ function Result() {
           >
             Back to Survey
           </Link>
+
         </div>
       </div>
     );
@@ -53,31 +47,34 @@ function Result() {
     diet_score: "Diet Quality",
     activity_level: "Physical Activity",
     stress_level: "Stress Level",
-    smoking_status: "Smoking",
+    smoking_status: "Smoking Status",
     alcohol_use: "Alcohol Consumption",
     screen_time: "Screen Time",
   };
 
-  const recommendationMap = {
+  const recommendations = {
     sleep_hours:
       "Aim for 7–9 hours of quality sleep every night.",
     diet_score:
-      "Increase fruits, vegetables and whole grains in your diet.",
+      "Improve your diet by including fruits, vegetables and whole grains.",
     activity_level:
-      "Perform at least 30 minutes of moderate exercise daily.",
+      "Exercise for at least 30 minutes every day.",
     stress_level:
-      "Practice meditation, yoga or breathing exercises regularly.",
+      "Practice meditation, yoga or breathing exercises.",
     smoking_status:
-      "Avoid smoking and consider a smoking cessation program.",
+      "Avoid smoking and seek professional help if required.",
     alcohol_use:
-      "Reduce alcohol consumption to recommended weekly limits.",
+      "Reduce alcohol intake to recommended limits.",
     screen_time:
-      "Reduce recreational screen time and take frequent breaks.",
+      "Reduce recreational screen time and take regular breaks.",
   };
 
   const topFactors = risk.shapContributions
     .slice(0, 3)
-    .map((item) => featureNames[item.feature] || item.feature);
+    .map(
+      (item) =>
+        featureNames[item.feature] || item.feature
+    );
 
   return (
     <div className="min-h-screen bg-slate-100 py-10">
@@ -90,11 +87,11 @@ function Result() {
             Health Risk Assessment Report
           </h1>
 
-          {/* Summary Cards */}
+          {/* Summary */}
 
           <div className="grid md:grid-cols-3 gap-6">
 
-            <div className="bg-blue-50 rounded-xl p-6 text-center shadow">
+            <div className="bg-blue-50 rounded-xl p-6 shadow text-center">
 
               <h2 className="text-lg font-semibold">
                 Overall Health Risk
@@ -110,21 +107,21 @@ function Result() {
 
             </div>
 
-            <div className="bg-yellow-50 rounded-xl p-6 text-center shadow">
+            <div className="bg-yellow-50 rounded-xl p-6 shadow text-center">
 
               <h2 className="text-lg font-semibold">
                 Risk Level
               </h2>
 
               <span
-                className={`inline-block mt-6 px-6 py-3 rounded-full text-white font-bold text-xl ${badgeColor[risk.riskCategory]}`}
+                className={`inline-block mt-6 px-6 py-3 rounded-full text-white text-xl font-bold ${badgeColor[risk.riskCategory]}`}
               >
                 {risk.riskCategory.toUpperCase()}
               </span>
 
             </div>
 
-            <div className="bg-green-50 rounded-xl p-6 text-center shadow">
+            <div className="bg-green-50 rounded-xl p-6 shadow text-center">
 
               <h2 className="text-lg font-semibold">
                 Prediction Confidence
@@ -147,19 +144,18 @@ function Result() {
             </h2>
 
             <p className="text-gray-700 leading-8">
-              Based on your submitted lifestyle information, the model predicts a{" "}
+              Based on your submitted lifestyle information, the AI model predicts a{" "}
               <strong>{risk.riskCategory}</strong> health risk.
 
-              The strongest contributing factors were{" "}
+              The strongest influencing lifestyle factors are{" "}
               <strong>{topFactors.join(", ")}</strong>.
 
-              Improving these lifestyle factors may help lower your overall
-              health risk.
+              Improving these factors can help lower your future health risk.
             </p>
 
           </div>
 
-          {/* SHAP Contributions */}
+          {/* SHAP */}
 
           <div className="mt-10">
 
@@ -207,26 +203,26 @@ function Result() {
               Personalized Recommendations
             </h2>
 
-            <ul className="space-y-3">
+            <div className="space-y-3">
 
               {risk.shapContributions.map((item, index) => (
 
-                <li
+                <div
                   key={index}
                   className="bg-blue-50 rounded-lg p-4"
                 >
-                  ✅ {recommendationMap[item.feature]}
-                </li>
+                  ✅ {recommendations[item.feature]}
+                </div>
 
               ))}
 
-            </ul>
+            </div>
 
           </div>
 
           {/* Buttons */}
 
-          <div className="flex gap-4 mt-10">
+          <div className="mt-10 flex gap-4">
 
             <Link
               to="/survey"
