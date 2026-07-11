@@ -52,7 +52,7 @@ try {
 
 console.log("About to navigate...");
 
-navigate("/result");
+window.location.href = "/result";
 
 console.log("Navigation called");
     } catch (err) {
