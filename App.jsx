@@ -6,21 +6,56 @@ import Survey from "./pages/Survey";
 import Dashboard from "./pages/Dashboard";
 import Result from "./pages/Result";
 
+import ProtectedRoute from "./components/ProtectedRoute";
+
 function App() {
 
     return (
 
         <Routes>
 
-            <Route path="/" element={<Login />} />
+            <Route
+                path="/"
+                element={<Login />}
+            />
 
-            <Route path="/register" element={<Register />} />
+            <Route
+                path="/register"
+                element={<Register />}
+            />
 
-            <Route path="/survey" element={<Survey />} />
+            <Route
+                path="/survey"
+                element={
+                    <ProtectedRoute>
 
-            <Route path="/dashboard" element={<Dashboard />} />
+                        <Survey />
 
-            <Route path="/result" element={<Result />} />
+                    </ProtectedRoute>
+                }
+            />
+
+            <Route
+                path="/dashboard"
+                element={
+                    <ProtectedRoute>
+
+                        <Dashboard />
+
+                    </ProtectedRoute>
+                }
+            />
+
+            <Route
+                path="/result"
+                element={
+                    <ProtectedRoute>
+
+                        <Result />
+
+                    </ProtectedRoute>
+                }
+            />
 
         </Routes>
 
